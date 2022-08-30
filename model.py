@@ -1,29 +1,29 @@
 import json
 
 class Stanje:
-    def __init__(self, stetje):
-        self.stetje = stetje
-    
-    def dodaj_stetje(self, eno_stetje):
-        self.stetje.append(eno_stetje)
-        return len(self.stetje) - 1
+    def __init__(self, stetja):
+        self.stetja = stetja
+
+    def dodaj_stetje(self, stetje):
+        self.stetja.append(stetje)
+        return len(self.stetja) - 1
 
     def preveri_podatke_novega_stetja(self, novo_stetje):
-        for eno_stetje in self.stetje:
-            if eno_stetje.ime == novo_stetje.ime:
+        for stetje in self.stetja:
+            if stetje == novo_stetje:
                 return {"ime": "Stetje s tem nazivom že obstaja"}
 
     def v_slovar(self):
         return {
-            "stetje": [eno_stetje.v_slovar() for eno_stetje in self.stetje],
+            "stetje": [stetje.v_slovar() for stetje in self.stetja],
         }
 
     @staticmethod
     def iz_slovarja(slovar):
         stanje = Stanje(
             [
-                Stetje.iz_slovarja(sl_stetje)
-                for sl_stetje in slovar["stetje"]
+                Stetje.iz_slovarja(stetje)
+                for stetje in slovar["stetje"]
             ]
         )
         return stanje
@@ -50,23 +50,27 @@ class Stetje:
 
     def preveri_podatke_novega_igralca(self, nov_igralec):
         for igralec in self.igralci:
-            if igralec.ime == nov_igralec.ime:
+            if igralec == nov_igralec:
                 return {"ime": "Igralec s tem imenom že obstaja"}
 
     def v_slovar(self):
-        return {
-            "igralci": [igralec.v_slovar() for igralec in self.igralci],
+        if self.igralci != None:
+            return {
+                "ime": self.ime,
+                "igralci": [ igralec.v_slovar() for igralec in self.igralci],
+        }
+        else:
+            return {
+                "ime": self.ime,
+                "igralci": [],
         }
 
     @staticmethod
     def iz_slovarja(slovar):
-        stanje = Stanje(
-            [
-                Igralec.iz_slovarja(sl_igralci)
-                for sl_igralci in slovar["igralci"]
-            ]
+        return Stetje(
+            slovar["ime"],
+            [Igralec.iz_slovarja(sl_igralci) for sl_igralci in slovar["igralci"]]
         )
-        return stanje
 
 
 class Igralec:
@@ -86,7 +90,7 @@ class Igralec:
     def v_slovar(self):
         return {
             "ime": self.ime,
-            "tocke": self.tocke,
+            "tocke": self.vsota_tock(),
         }
 
     @staticmethod
