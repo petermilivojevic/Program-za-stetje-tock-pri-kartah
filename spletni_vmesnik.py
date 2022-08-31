@@ -28,6 +28,21 @@ def shrani_stanje_trenutnega_uporabnika(stanje):
     ime_datoteke = ime_uporabnikove_datoteke(uporabnisko_ime)
     stanje.shrani_v_datoteko(ime_datoteke)
 
+
+@bottle.get("/prijava/")
+def prijava_get():
+    return bottle.template("prijava.tpl")
+
+@bottle.post("/prijava/")
+def prijava_post():
+    uporabnisko_ime = bottle.request.forms.getunicode("uporabnisko_ime")
+    geslo = bottle.request.forms.getunicode("geslo")
+    if uporabnisko_ime == geslo:
+        bottle.response.set_cookie("uporabnisko_ime", uporabnisko_ime, path="/", secret=SIFRIRNI_KLJUC)
+        bottle.redirect("/zacetna_stran/")
+    else:
+        return "Napaka ob prijavi"
+
 @bottle.get("/")
 def zacetna_stran():
     stanje = stanje_trenutnega_uporabnika()
@@ -44,21 +59,6 @@ def zacetna_stran_po_prijavi():
         stetja=stanje.stetja,
     )
 
-@bottle.get("/prijava/")
-def prijava_get():
-    return bottle.template("prijava.tpl")
-
-@bottle.post("/prijava/")
-def prijava_post():
-    uporabnisko_ime = bottle.request.forms.getunicode("uporabnisko_ime")
-    geslo = bottle.request.forms.getunicode("geslo")
-    if uporabnisko_ime == geslo:
-        bottle.response.set_cookie("uporabnisko_ime", uporabnisko_ime, path="/", secret=SIFRIRNI_KLJUC)
-        bottle.redirect("/zacetna_stran/")
-    else:
-        return "Napaka ob prijavi"
-
-
 
 @bottle.get("/stetja/<id_stetja:int>/")
 def prikazi_stetje(id_stetja):
@@ -69,6 +69,24 @@ def prikazi_stetje(id_stetja):
         stetja=stanje.stetja,
         aktualno_stetje=stetje,
         id_aktualnega_stetja=id_stetja,
+        napake={},
+        polja={}
+    )
+
+@bottle.get("/stetja/<id_stetja:int>/<id_igralca:int>/")
+def prikazi_igralca(id_stetja, id_igralca):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    igralec = stetje.igralci[id_igralca]
+    return bottle.template(
+        "stetje.tpl",
+        stetja=stanje.stetja,
+        aktualno_stetje=stetje,
+        id_aktualnega_stetja=id_stetja,
+        aktualni_igralec=igralec,
+        id_aktualnega_igralca=id_igralca,
+        napake={},
+        polja={}
     )
 
 @bottle.get("/dodaj_stetje/")
@@ -80,7 +98,7 @@ def dodaj_stetje_post():
     stanje = stanje_trenutnega_uporabnika()
     ime = bottle.request.forms.getunicode("ime")
     stetje = Stetje(ime, igralci=[])
-    napake = stanje.preveri_podatke_novega_stetja(ime)
+    napake = stanje.preveri_podatke_novega_stetja(stetje)
     if napake:
         polja = {"ime": ime}
         return bottle.template("dodaj_stetje.tpl", napake=napake, polja=polja)
@@ -90,19 +108,59 @@ def dodaj_stetje_post():
         bottle.redirect(url_stetja(id_stetja))
 
 @bottle.post("/stetja/<id_stetja:int>/")
-def dodaj_igralca_post(id_stetja):
+def dodaj_igralca(id_stetja):
     stanje = stanje_trenutnega_uporabnika()
     stetje = stanje.stetja[id_stetja]
     ime = bottle.request.forms.getunicode("ime")
-    if bottle.request.forms["tocke"]:
-        tocke = bottle.request.forms["tocke"]
+    if bottle.request.forms.getunicode("tocke"):
+        tocke = bottle.request.forms.getunicode("tocke")
     else:
-        tocke = ["0"]
-    nov_igralec = Igralec(ime, tocke)
-    stetje.dodaj_igralca(nov_igralec)
-    shrani_stanje_trenutnega_uporabnika(stanje)
-    bottle.redirect("/zacetna_stran/")
+        tocke = "0"
+    nov_igralec = Igralec(ime, [tocke])
+    napake = stetje.preveri_podatke_novega_igralca(nov_igralec)
+    if napake:
+        polja = {"ime": ime}
+        return bottle.template(
+            "stetje.tpl", 
+            napake=napake, 
+            polja=polja, 
+            stetja=stanje.stetja, 
+            aktualno_stetje=stetje, 
+            id_aktualnega_stetja=id_stetja)
+    else:
+        stetje.dodaj_igralca(id_stetja, nov_igralec)
+        shrani_stanje_trenutnega_uporabnika(stanje)
+        bottle.redirect(url_stetja(id_stetja))
 
+@bottle.post("/stetja/<id_stetja:int>/<id_igralca:int>/")
+def dodaj_tocke(id_stetja, id_igralca):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    igralec = stetje.igralci[id_igralca]
+    if bottle.request.forms.getunicode("nove_tocke"):
+        tocke = bottle.request.forms.getunicode("nove_tocke")
+    else:
+        tocke = "0"
+    igralec.dodaj_tocke(tocke)
+    shrani_stanje_trenutnega_uporabnika(stanje)
+    bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/")
+    
+
+@bottle.get("/stetja/<id_stetja:int>/<id_igralca:int>/")
+def prikazi_stetje(id_stetja, id_igralca):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    igralec = stetje.igralci[id_igralca]
+    return bottle.template(
+        "stetje.tpl",
+        stetja=stanje.stetja,
+        aktualno_stetje=stetje,
+        id_aktualnega_stetja=id_stetja,
+        aktualni_igralec=igralec,
+        id_aktualnega_igralca=id_igralca,
+        napake={},
+        polja={}
+    )
 
 
 
