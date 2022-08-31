@@ -4,7 +4,7 @@
             % for id_stetja, stetje in enumerate(stetja):
             <a href="/stetja/{{id_stetja}}/" class="button" name="id_stetja" value="{{id_stetja}}">
                 {{stetje.ime}}
-                <span class="tag is-rounded">{{stetje.igralci}}</span>
+                <span class="tag is-rounded">{{stetje.stevilo_igralcev()}}</span>
             </a>
             % end
         </div>

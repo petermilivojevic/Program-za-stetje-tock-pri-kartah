@@ -5,12 +5,12 @@
             % if stetje == aktualno_stetje:
             <a class="button is-primary is-selected" name="id_stetja" value="{{id_stetja}}">
                 {{stetje.ime}}
-                <span class="tag is-rounded">{{stetje.igralci}}</span>
+                <span class="tag is-rounded">{{stetje.stevilo_igralcev()}}</span>
             </a>
             % else:
             <a href="/stetja/{{id_stetja}}/" class="button" name="id_stetja" value="{{id_stetja}}">
                 {{stetje.ime}}
-                <span class="tag is-rounded">{{stetje.igralci}}</span>
+                <span class="tag is-rounded">{{stetje.stevilo_igralcev()}}</span>
             </a>
             % end
             % end
@@ -28,36 +28,56 @@
 
 % if aktualno_stetje:
 
-<table class="table is-hoverable is-fullwidth">
-    <thead>
-        <tr>
-            <form method="POST" action="/stetja/{{id_stetja}}/">
-                <td></td>
-                <td>
-                    <div class="control has-icons-left">
-                        <input class="input is-small" type="text" name="ime igralca" placeholder="ime igralca">
-                        <span class="icon is-small is-left">
-                            <i class="far fa-clipboard-check"></i>
-                        </span>
-                    </div>
-                </td>
-                <td>
-                    <div class="control has-icons-left">
-                        <input class="input is-small" type="text" name="tocke" placeholder="tocke">
-                        <span class="icon is-small is-left">
-                            <i class="far fa-calendar-alt"></i>
-                        </span>
-                    </div>
-                </td>
-                <td>
-                    <div class="control">
-                        <button class="button is-info is-small">dodaj</button>
-                    </div>
-                </td>
-            </form>
-        </tr>
-    </thead>
-</table>
+<thead>
+    <tr>
+        <form method="POST" action="/stetja/{{id_aktualnega_stetja}}/">
+            <td></td>
+            <td>
+                <div class="control has-icons-left">
+                    <input class="input is-small" type="text" name="ime" placeholder="ime igralca">
+                    <span class="icon is-small is-left">
+                        <i class="far fa-clipboard-check"></i>
+                    </span>
+                </div>
+                % if "ime" in napake:
+                <p class="help is-danger">{{ napake["ime"] }}</p>
+                % end
+            </td>
+            <td>
+                <div class="control has-icons-left">
+                    <input class="input is-small" type="number" step="1" name="tocke" placeholder="0">
+                    <span class="icon is-small is-left">
+                        <i class="far fa-calendar-alt"></i>
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div class="control">
+                    <button class="button is-info is-small">dodaj</button>
+                </div>
+            </td>
+        </form>
+    </tr>
+</thead>
+<tbody>
+    % for id_igralca, igralec in enumerate(aktualno_stetje.igralci):
+    <tr>
+        <td>{{ igralec.ime }}: {{ igralec.vsota_tock() }} točk</td>
+        <form method="POST" action="/stetja/{{id_aktualnega_stetja}}/{{id_igralca}}/">
+            <td></td>
+            
+            <td>
+                <input class="input is-small" type="number" step="1" name="nove_tocke" placeholder="dodaj točke">
+            </td>
+            <td>
+                <div class="control">
+                    <button class="button is-info is-small">dodaj točke</button>
+                </div>
+            </td>
+        </form>
+    </tr>
+% end
+</tbody>
 
 % else:
 
