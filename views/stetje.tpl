@@ -34,7 +34,7 @@
             <td></td>
             <td>
                 <div class="control has-icons-left">
-                    <input class="input is-small" type="text" name="ime" placeholder="ime igralca">
+                    <input class="input is-small" type="text" name="ime" placeholder="ime igralca" value="{{polja.get('ime', '')}}">
                     <span class="icon is-small is-left">
                         <i class="far fa-clipboard-check"></i>
                     </span>
@@ -76,9 +76,14 @@
             </td>
         </form>
     </tr>
-% end
+    % end
 </tbody>
+
+
+<p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_tarok/">Pomoč pri štetju za tarok</a></p>
+<p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_enka/">Pomoč pri štetju za enko</a></p>
 
 % else:
 
 <p>Nimate še nobenega stetja. <a href="/dodaj_stetje/">Dodajte ga!</a></p>
+% end

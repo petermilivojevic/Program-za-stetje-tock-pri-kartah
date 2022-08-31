@@ -126,7 +126,8 @@ def dodaj_igralca(id_stetja):
             polja=polja, 
             stetja=stanje.stetja, 
             aktualno_stetje=stetje, 
-            id_aktualnega_stetja=id_stetja)
+            id_aktualnega_stetja=id_stetja,
+            )
     else:
         stetje.dodaj_igralca(id_stetja, nov_igralec)
         shrani_stanje_trenutnega_uporabnika(stanje)
@@ -161,6 +162,192 @@ def prikazi_stetje(id_stetja, id_igralca):
         napake={},
         polja={}
     )
+
+@bottle.get("/stetja/<id_stetja:int>/pomoc_tarok/")
+def pomoc_pri_stetju_tarok(id_stetja):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    return bottle.template(
+        "pomoc_tarok.tpl",
+        stetja=stanje.stetja,
+        aktualno_stetje=stetje,
+        id_aktualnega_stetja=id_stetja
+    )
+
+@bottle.get("/stetja/<id_stetja:int>/pomoc_enka/")
+def pomoc_pri_stetju_enka(id_stetja):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    return bottle.template(
+        "pomoc_enka.tpl",
+        stetja=stanje.stetja,
+        aktualno_stetje=stetje,
+        id_aktualnega_stetja=id_stetja,
+    )
+
+@bottle.get("/stetja/<id_stetja:int>/pomoc_enka/porazenec/")
+def pomoc_pri_stetju_enka(id_stetja):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    return bottle.template(
+        "pomoc_enka_porazenec.tpl",
+        stetja=stanje.stetja,
+        aktualno_stetje=stetje,
+        id_aktualnega_stetja=id_stetja,
+    )
+
+@bottle.get("/stetja/<id_stetja:int>/pomoc_enka/zmagovalec/")
+def pomoc_pri_stetju_enka(id_stetja):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    return bottle.template(
+        "pomoc_enka_zmagovalec.tpl",
+        stetja=stanje.stetja,
+        aktualno_stetje=stetje,
+        id_aktualnega_stetja=id_stetja,
+    )
+
+
+@bottle.post("/stetja/<id_stetja:int>/<id_igralca:int>/pomoc_enka/porazenec/")
+def dodaj_tocke_enka_porazenec(id_stetja, id_igralca):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    igralec = stetje.igralci[id_igralca]
+    if bottle.request.forms.getunicode("stevilo enic"):
+        tocke1 = bottle.request.forms.getunicode("stevilo enic")
+    else:
+        tocke1 = "0"
+    if bottle.request.forms.getunicode("stevilo dvojic"):
+        tocke2 = str(2*int(bottle.request.forms.getunicode("stevilo dvojic")))
+    else:
+        tocke2 = "0"
+    if bottle.request.forms.getunicode("stevilo trojic"):
+        tocke3 = str(3*int(bottle.request.forms.getunicode("stevilo trojic")))
+    else:
+        tocke3 = "0"
+    if bottle.request.forms.getunicode("stevilo štiric"):
+        tocke4 = str(4*int(bottle.request.forms.getunicode("stevilo stiric")))
+    else:
+        tocke4 = "0"
+    if bottle.request.forms.getunicode("stevilo petic"):
+        tocke5 = str(5*int(bottle.request.forms.getunicode("stevilo petic")))
+    else:
+        tocke5 = "0"
+    if bottle.request.forms.getunicode("stevilo šestic"):
+        tocke6 = str(6*int(bottle.request.forms.getunicode("stevilo sestic")))
+    else:
+        tocke6 = "0"
+    if bottle.request.forms.getunicode("stevilo sedmic"):
+        tocke7 = str(7*int(bottle.request.forms.getunicode("stevilo sedmic")))
+    else:
+        tocke7 = "0"
+    if bottle.request.forms.getunicode("stevilo osmic"):
+        tocke8 = str(8*int(bottle.request.forms.getunicode("stevilo osmic")))
+    else:
+        tocke8 = "0"
+    if bottle.request.forms.getunicode("stevilo devetic"):
+        tocke9 = str(9*int(bottle.request.forms.getunicode("stevilo devetic")))
+    else:
+        tocke9 = "0"
+    if bottle.request.forms.getunicode("stevilo dvajsetic"):
+        tocke20 = str(20*int(bottle.request.forms.getunicode("stevilo dvajsetic")))
+    else:
+        tocke20 = "0"
+    if bottle.request.forms.getunicode("stevilo petdesetic"):
+        tocke50 = str(50*int(bottle.request.forms.getunicode("stevilo petdesetic")))
+    else:
+        tocke50 = "0"
+    if bottle.request.forms.getunicode("stevilo stotic"):
+        tocke100 = str(100*int(bottle.request.forms.getunicode("stevilo stotic")))
+    else:
+        tocke100 = "0"
+    karte = (tocke1, tocke2, tocke3, tocke4, tocke5, tocke6, tocke7, tocke8, tocke9, tocke20, tocke50, tocke100 )
+    for tocke in karte:
+        igralec.dodaj_tocke(tocke)
+    shrani_stanje_trenutnega_uporabnika(stanje)
+    bottle.redirect(f"/stetja/{id_stetja}/pomoc_enka/porazenec/")
+
+@bottle.get("/stetja/<id_stetja:int>/<id_igralca:int>/pomoc_enka/zmagovalec/")
+def dodaj_tocke_enka_zmagovalec_get(id_stetja, id_igralca):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    igralec = stetje.igralci[id_igralca]
+    return bottle.template(
+        "dodaj_tocke_zmagovalec.tpl",
+        stetja=stanje.stetja,
+        aktualno_stetje=stetje,
+        id_aktualnega_stetja=id_stetja,
+        aktualni_igralec=igralec,
+        id_aktualnega_igralca=id_igralca,
+    )
+
+@bottle.post("/stetja/<id_stetja:int>/pomoc_enka/zmagovalec/")
+def dodaj_tocke_enka_zmagovalec_post(id_stetja):
+    igralec = bottle.request.forms.getunicode("zmagovalec")
+    id_igralca =f"{igralec}"
+    bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/pomoc_enka/zmagovalec/")
+
+@bottle.post("/stetja/<id_stetja:int>/<id_igralca:int>/pomoc_enka/zmagovalec/")
+def dodaj_tocke_enka_zmagovalec(id_stetja, id_igralca):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    igralec = stetje.igralci[id_igralca]
+    if bottle.request.forms.getunicode("stevilo enic"):
+        tocke1 = bottle.request.forms.getunicode("stevilo enic")
+    else:
+        tocke1 = "0"
+    if bottle.request.forms.getunicode("stevilo dvojic"):
+        tocke2 = str(2*int(bottle.request.forms.getunicode("stevilo dvojic")))
+    else:
+        tocke2 = "0"
+    if bottle.request.forms.getunicode("stevilo trojic"):
+        tocke3 = str(3*int(bottle.request.forms.getunicode("stevilo trojic")))
+    else:
+        tocke3 = "0"
+    if bottle.request.forms.getunicode("stevilo štiric"):
+        tocke4 = str(4*int(bottle.request.forms.getunicode("stevilo stiric")))
+    else:
+        tocke4 = "0"
+    if bottle.request.forms.getunicode("stevilo petic"):
+        tocke5 = str(5*int(bottle.request.forms.getunicode("stevilo petic")))
+    else:
+        tocke5 = "0"
+    if bottle.request.forms.getunicode("stevilo šestic"):
+        tocke6 = str(6*int(bottle.request.forms.getunicode("stevilo sestic")))
+    else:
+        tocke6 = "0"
+    if bottle.request.forms.getunicode("stevilo sedmic"):
+        tocke7 = str(7*int(bottle.request.forms.getunicode("stevilo sedmic")))
+    else:
+        tocke7 = "0"
+    if bottle.request.forms.getunicode("stevilo osmic"):
+        tocke8 = str(8*int(bottle.request.forms.getunicode("stevilo osmic")))
+    else:
+        tocke8 = "0"
+    if bottle.request.forms.getunicode("stevilo devetic"):
+        tocke9 = str(9*int(bottle.request.forms.getunicode("stevilo devetic")))
+    else:
+        tocke9 = "0"
+    if bottle.request.forms.getunicode("stevilo dvajsetic"):
+        tocke20 = str(20*int(bottle.request.forms.getunicode("stevilo dvajsetic")))
+    else:
+        tocke20 = "0"
+    if bottle.request.forms.getunicode("stevilo petdesetic"):
+        tocke50 = str(50*int(bottle.request.forms.getunicode("stevilo petdesetic")))
+    else:
+        tocke50 = "0"
+    if bottle.request.forms.getunicode("stevilo stotic"):
+        tocke100 = str(100*int(bottle.request.forms.getunicode("stevilo stotic")))
+    else:
+        tocke100 = "0"
+    karte = (tocke1, tocke2, tocke3, tocke4, tocke5, tocke6, tocke7, tocke8, tocke9, tocke20, tocke50, tocke100 )
+    for tocke in karte:
+        igralec.dodaj_tocke(tocke)
+    shrani_stanje_trenutnega_uporabnika(stanje)
+    bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/pomoc_enka/zmagovalec/")
+
+
+
 
 
 
