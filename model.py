@@ -10,12 +10,12 @@ class Stanje:
 
     def preveri_podatke_novega_stetja(self, novo_stetje):
         for stetje in self.stetja:
-            if stetje == novo_stetje:
+            if stetje.ime == novo_stetje.ime:
                 return {"ime": "Stetje s tem nazivom že obstaja"}
 
     def v_slovar(self):
         return {
-            "stetje": [stetje.v_slovar() for stetje in self.stetja],
+            "stetje": [Stetje.v_slovar(stetje) for stetje in self.stetja],
         }
 
     @staticmethod
@@ -45,24 +45,21 @@ class Stetje:
         self.ime = ime
         self.igralci = igralci
 
-    def dodaj_igralca(self, igralec):
-        self.igralci.append(igralec)
+    def stevilo_igralcev(self):
+        return len(self.igralci)
+
+    def dodaj_igralca(self, id_stetja, igralec):
+        self.igralci.insert(id_stetja, igralec)
 
     def preveri_podatke_novega_igralca(self, nov_igralec):
         for igralec in self.igralci:
-            if igralec == nov_igralec:
+            if igralec.ime == nov_igralec.ime:
                 return {"ime": "Igralec s tem imenom že obstaja"}
 
     def v_slovar(self):
-        if self.igralci != None:
             return {
                 "ime": self.ime,
                 "igralci": [ igralec.v_slovar() for igralec in self.igralci],
-        }
-        else:
-            return {
-                "ime": self.ime,
-                "igralci": [],
         }
 
     @staticmethod
@@ -83,14 +80,14 @@ class Igralec:
     
     def vsota_tock(self):
         vsota = 0
-        for element in self.tocke:
-            vsota += int(element)
+        for tocke in self.tocke:
+            vsota += int(tocke)
         return vsota
 
     def v_slovar(self):
         return {
             "ime": self.ime,
-            "tocke": self.vsota_tock(),
+            "tocke": self.tocke,
         }
 
     @staticmethod
