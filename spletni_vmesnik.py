@@ -234,12 +234,21 @@ def dodaj_tocke_tarok_za_dva(id_stetja, id_igralca_ki_je_igral, id_zmagovalca):
     shrani_stanje_trenutnega_uporabnika(stanje)
     bottle.redirect(url_stetja(id_stetja))
 
-
-        
-        
-
-        
-
+@bottle.post("/stetja/<id_stetja:int>/mondfang/")
+def mondfang(id_stetja):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    if bottle.request.forms.getunicode("nesrecnez"):
+        nesrecnez = bottle.request.forms.getunicode("nesrecnez")
+        id_nesrecneza = int(f"{nesrecnez}")
+        igralec = stetje.igralci[id_nesrecneza]
+        tocke = "-21"
+        igralec.dodaj_tocke(tocke)
+    else:
+        bottle.redirect(f"/stetja/{id_stetja}/pomoc_tarok/")
+    shrani_stanje_trenutnega_uporabnika(stanje)
+    bottle.redirect(f"/stetja/{id_stetja}/pomoc_tarok/")
+    
 
 @bottle.post("/stetja/<id_stetja:int>/<id_igralca_ki_je_igral:int>/pomoc_tarok/zmaga/")
 def kdo_je_zmagal_tarok(id_stetja, id_igralca_ki_je_igral):

@@ -18,7 +18,24 @@
                 <button class="button is-info is-small">izberi</button>
             </div>
         </form>
-    </tr> 
+    </tr>
+    <tr></tr>
+    <tr></tr>
+    <p>Če se je zgodil "mondfang", izberite igralca, ki je izgubil monda?<br></p>
+    % for id_igralca, igralec in enumerate(aktualno_stetje.igralci):
+    <tr>
+        <form method="POST" action="/stetja/{{id_aktualnega_stetja}}/mondfang/">
+            <td></td>
+            <td>
+                <input type="radio" name="nesrecnez" value="{{id_igralca}}">{{igralec.ime}}: {{ igralec.vsota_tock() }} trenutnih točk<br>
+            </td>
+    % end
+            <div class="control">
+                <button class="button is-info is-small">izberi</button>
+            </div>
+        </form>
+    </tr>
+
     <h3>Način štetja</h3>
     <p>
         Če je igralec napovedal igro in jo zmagal dobi dvakratnik točk,
