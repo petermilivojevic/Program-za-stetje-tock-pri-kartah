@@ -1,3 +1,5 @@
+% rebase('osnova.tpl')
+
 <h1>Dobrodošli na strani za pomoč pri štetju točk za enko po načinu za iskanje zmagovalca</h1>
 
 Kdo je zmagal?<br>
@@ -14,6 +16,8 @@ Kdo je zmagal?<br>
             </div>
         </form>
     </tr>
+<br>
+<br>
 
 <p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_enka/">Nazaj na stran za pomoč pri štetju za enko.</a></p>
 <p><a href="/stetja/{{id_aktualnega_stetja}}/">Nazaj na štetje.</a></p>

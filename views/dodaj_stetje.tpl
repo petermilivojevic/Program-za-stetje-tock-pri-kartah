@@ -1,12 +1,11 @@
-<h1>Dodajte stetje</h1>
+% rebase('osnova.tpl')
+
+<h1>Dodajte štetje</h1>
 <form method="POST">
     <div class="field">
         <label class="label">Ime</label>
         <div class="control has-icons-left has-icons-right">
             <input class="input" name="ime" type="text" placeholder="ime stetja" value="{{polja.get('ime', '')}}">
-            <span class="icon is-small is-left">
-                <i class="fas fa-clipboard-check"></i>
-            </span>
         </div>
         % if "ime" in napake:
         <p class="help is-danger">{{ napake["ime"] }}</p>

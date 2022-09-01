@@ -1,3 +1,4 @@
+% rebase('osnova.tpl')
 
 % if id_zmagovalca == 2:
 Kdo je zmagal?<br>
@@ -28,7 +29,7 @@ Dodaj točke, ki si jih je med igro priigral zmagovalec.
         </div>
     </td>
 </form>
-<p><a href="/stetja/{{id_aktualnega_stetja}}/{{id_aktualnega_igralca}}/2/pomoc_tarok/za_dva/">Nazaj na stran za izbiro zmagovalca.</a></p>
+<p><a href="/stetja/{{id_aktualnega_stetja}}/{{id_aktualnega_igralca}}/2/pomoc_tarok/2/">Nazaj na stran za izbiro zmagovalca.</a></p>
 
 %end
 

@@ -1,3 +1,5 @@
+% rebase('osnova.tpl')
+
 <nav class="level">
     <div class="level-left">
         <div class="buttons has-addons field is-horizontal">
@@ -13,7 +15,7 @@
 
     <div class="level-right">
             <div class="level-item">
-                <a class="button is-info" href="/dodaj_stetje/">dodaj stetje</a>
+                <a class="button is-info" href="/dodaj_stetje/">dodaj štetje</a>
             </div>
         </form>
     </div>

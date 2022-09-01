@@ -1,3 +1,5 @@
+% rebase('osnova.tpl')
+
 <h1>Dobrodošli na strani za pomoč pri štetju točk za enko po načinu za iskanje poraženca</h1>
 
 <tbody>
@@ -7,40 +9,40 @@
         <form method="POST" action="/stetja/{{id_aktualnega_stetja}}/{{id_igralca}}/pomoc_enka/porazenec/">
             <td></td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo enic" placeholder="krat 1">
+                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo enic" placeholder="število kart s cifro 1">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo dvojic" placeholder="krat 2">
+                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo dvojic" placeholder="število kart s cifro 2">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo trojic" placeholder="krat 3">
+                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo trojic" placeholder="število kart s cifro 3">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo stiric" placeholder="krat 4">
+                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo stiric" placeholder="število kart s cifro 4">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo petic" placeholder="krat 5">
+                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo petic" placeholder="število kart s cifro 5">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo sestic" placeholder="krat 6">
+                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo sestic" placeholder="število kart s cifro 6">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo sedmic" placeholder="krat 7">
+                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo sedmic" placeholder="število kart s cifro 7">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo osmic" placeholder="krat 8">
+                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo osmic" placeholder="število kart s cifro 8">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo devetic" placeholder="krat 9">
+                <input class="input is-small" type="number" step="1" min="0" max="8" name="stevilo devetic" placeholder="število kart s cifro 9">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="24" name="stevilo dvajsetic" placeholder="krat 20">
+                <input class="input is-small" type="number" step="1" min="0" max="24" name="stevilo dvajsetic" placeholder="število kart: vleci 2, zamenjaj smer, stop">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="7" name="stevilo petdesetic" placeholder="krat 50">
+                <input class="input is-small" type="number" step="1" min="0" max="7" name="stevilo petdesetic" placeholder="število kart: menjaj barvo, vleci 4">
             </td>
             <td>
-                <input class="input is-small" type="number" step="1" min="0" max="1" name="stevilo stotic" placeholder="krat 100">
+                <input class="input is-small" type="number" step="1" min="0" max="1" name="stevilo stotic" placeholder="karta plus 5">
             </td>
             <td>
                 <div class="control">
@@ -51,6 +53,8 @@
     </tr>
 % end    
 </tbody>
+<br>
+<br>
 
 <p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_enka/">Nazaj na stran za pomoč pri štetju za enko.</a></p>
 <p>Dodali vse točke?<a href="/stetja/{{id_aktualnega_stetja}}/">Nazaj na stetje.</a></p>

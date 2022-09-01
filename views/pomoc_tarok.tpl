@@ -1,7 +1,9 @@
-<h1>Dobrodošli na strani za pomoč pri štetju točk za tarok</h1>
+% rebase('osnova.tpl')
 
+<h1>Dobrodošli na strani za pomoč pri štetju točk za tarok.</h1>
+<br>
     % if aktualno_stetje.stevilo_igralcev() == 2:
-        <h2> Tu je pomoč za igro v dveh.</h2>
+        <h2> Tu je pomoč za igro v dveh.</h2><br>
         <p>Kdo je "igral"?<br></p>
         % for id_igralca, igralec in enumerate(aktualno_stetje.igralci):
     <tr>
@@ -19,9 +21,8 @@
             </div>
         </form>
     </tr>
-    <tr></tr>
-    <tr></tr>
-    <p>Če se je zgodil "mondfang", izberite igralca, ki je izgubil monda?<br></p>
+   <br>
+    <p>Če se je zgodil "mondfang", izberite igralca, ki je izgubil monda?</p>
     % for id_igralca, igralec in enumerate(aktualno_stetje.igralci):
     <tr>
         <form method="POST" action="/stetja/{{id_aktualnega_stetja}}/mondfang/">
@@ -35,7 +36,7 @@
             </div>
         </form>
     </tr>
-
+<br>
     <h3>Način štetja</h3>
     <p>
         Če je igralec napovedal igro in jo zmagal dobi dvakratnik točk,
@@ -57,5 +58,6 @@
     % else:
         <tr> Tarok se igra v dveh, treh, ali štirih</ tr>
     % end
-
+<br>
+<br>
 <p><a href="/stetja/{{id_aktualnega_stetja}}/">Nazaj na štetje.</a></p>

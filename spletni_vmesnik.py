@@ -12,7 +12,7 @@ def url_stetja(id_stetja):
 def stanje_trenutnega_uporabnika():
     uporabnisko_ime = bottle.request.get_cookie("uporabnisko_ime", secret=SIFRIRNI_KLJUC)
     if uporabnisko_ime == None:
-        bottle.redirect("/prijava/")
+        bottle.redirect("/")
     else:
         uporabnisko_ime = uporabnisko_ime
     ime_datoteke = ime_uporabnikove_datoteke(uporabnisko_ime)
@@ -29,7 +29,7 @@ def shrani_stanje_trenutnega_uporabnika(stanje):
     stanje.shrani_v_datoteko(ime_datoteke)
 
 
-@bottle.get("/prijava/")
+@bottle.get("/")
 def prijava_get():
     return bottle.template("prijava.tpl")
 
@@ -41,15 +41,12 @@ def prijava_post():
         bottle.response.set_cookie("uporabnisko_ime", uporabnisko_ime, path="/", secret=SIFRIRNI_KLJUC)
         bottle.redirect("/zacetna_stran/")
     else:
-        return "Napaka ob prijavi"
-
-@bottle.get("/")
-def zacetna_stran():
-    stanje = stanje_trenutnega_uporabnika()
-    return bottle.template(
-        "zacetna_stran.tpl",
-        stetja=stanje.stetja,
-    )
+        return "<h1>Napaka pri prijavi.</h1>"
+    
+@bottle.post("/odjava/")
+def odjava_post():
+    bottle.response.delete_cookie("uporabnisko_ime", path="/")
+    bottle.redirect("/")
 
 @bottle.get("/zacetna_stran/")
 def zacetna_stran_po_prijavi():
@@ -58,7 +55,6 @@ def zacetna_stran_po_prijavi():
         "stetja.tpl",
         stetja=stanje.stetja,
     )
-
 
 @bottle.get("/stetja/<id_stetja:int>/")
 def prikazi_stetje(id_stetja):
@@ -174,16 +170,16 @@ def pomoc_pri_stetju_tarok(id_stetja):
         id_aktualnega_stetja=id_stetja
     )
 
-@bottle.get("/stetja/<id_stetja:int>/<id_igralca_ki_je_igral:int>/<id_zmagovalca:int>/pomoc_tarok/za_dva/")
+@bottle.get("/stetja/<id_stetja:int>/<id_igralca_ki_je_igral:int>/<id_zmagovalca:int>/pomoc_tarok/2/")
 def kdo_je_zmagal(id_stetja, id_igralca_ki_je_igral, id_zmagovalca):
     stanje = stanje_trenutnega_uporabnika()
     stetje = stanje.stetja[id_stetja]
-    if int(id_igralca_ki_je_igral) < 2:
+    if id_igralca_ki_je_igral in ("0", "1"):
         igralec = stetje.igralci[id_igralca_ki_je_igral]
     else:
         igralec = 2
     return bottle.template(
-        "pomoc_za_dva.tpl",
+        "pomoc_za_tarok.tpl",
         stetja=stanje.stetja,
         aktualno_stetje=stetje,
         id_aktualnega_stetja=id_stetja,
@@ -193,7 +189,7 @@ def kdo_je_zmagal(id_stetja, id_igralca_ki_je_igral, id_zmagovalca):
     )
 
 @bottle.post("/stetja/<id_stetja:int>/<id_igralca_ki_je_igral:int>/<id_zmagovalca:int>/")
-def dodaj_tocke_tarok_za_dva(id_stetja, id_igralca_ki_je_igral, id_zmagovalca):
+def dodaj_tocke_tarok_2(id_stetja, id_igralca_ki_je_igral, id_zmagovalca):
     stanje = stanje_trenutnega_uporabnika()
     stetje = stanje.stetja[id_stetja]
     igralec_ki_je_zmagal = stetje.igralci[id_zmagovalca]
@@ -213,7 +209,7 @@ def dodaj_tocke_tarok_za_dva(id_stetja, id_igralca_ki_je_igral, id_zmagovalca):
             igralec_ki_je_igral.dodaj_tocke(tocke)
     else:
         igralec_ki_je_igral = 2
-        if int(id_zmagovalca) == 0:
+        if id_zmagovalca == "0":
             porazenec = stetje.igralci[1]
             if bottle.request.forms.getunicode("nove_tocke"):
                 tocke = bottle.request.forms.getunicode("nove_tocke")
@@ -254,17 +250,22 @@ def mondfang(id_stetja):
 def kdo_je_zmagal_tarok(id_stetja, id_igralca_ki_je_igral):
     zmagovalec = bottle.request.forms.getunicode("zmagovalec")
     id_zmagovalca = f"{zmagovalec}"
-    bottle.redirect(f"/stetja/{id_stetja}/{id_igralca_ki_je_igral}/{id_zmagovalca}/pomoc_tarok/za_dva/")
+    if id_zmagovalca in ("0", "1"):
+        bottle.redirect(f"/stetja/{id_stetja}/{id_igralca_ki_je_igral}/{id_zmagovalca}/pomoc_tarok/2/")
+    else:
+        bottle.redirect(f"/stetja/{id_stetja}/{id_igralca_ki_je_igral}/2/pomoc_tarok/2/")
 
 
 @bottle.post("/stetja/<id_stetja:int>/pomoc_tarok/")
 def kdo_je_igral(id_stetja):
     igralec = bottle.request.forms.getunicode("igram")
     id_igralca = f"{igralec}"
-    if int(id_igralca) < 2:
-        bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/2/pomoc_tarok/za_dva/")
+    if id_igralca in ("0", "1"):
+        bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/2/pomoc_tarok/2/")
+    elif id_igralca == "2":
+        bottle.redirect(f"/stetja/{id_stetja}/2/2/pomoc_tarok/2/")
     else:
-        bottle.redirect(f"/stetja/{id_stetja}/2/2/pomoc_tarok/za_dva/")
+        bottle.redirect(f"/stetja/{id_stetja}/pomoc_tarok/")
 
 
 @bottle.get("/stetja/<id_stetja:int>/pomoc_enka/")
