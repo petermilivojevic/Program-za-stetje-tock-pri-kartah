@@ -15,4 +15,5 @@ Kdo je zmagal?<br>
         </form>
     </tr>
 
+<p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_enka/">Nazaj na stran za pomoč pri štetju za enko.</a></p>
 <p><a href="/stetja/{{id_aktualnega_stetja}}/">Nazaj na štetje.</a></p>

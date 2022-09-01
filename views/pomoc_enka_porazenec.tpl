@@ -52,4 +52,5 @@
 % end    
 </tbody>
 
+<p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_enka/">Nazaj na stran za pomoč pri štetju za enko.</a></p>
 <p>Dodali vse točke?<a href="/stetja/{{id_aktualnega_stetja}}/">Nazaj na stetje.</a></p>

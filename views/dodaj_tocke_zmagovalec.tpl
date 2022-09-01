@@ -23,5 +23,6 @@
     </tr>
 </tbody>
 
-
+<p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_enka/zmagovalec/">Nazaj na stran za izbiro zmagovalca.</a></p>
+<p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_enka/">Nazaj na stran za pomoč pri štetju za enko.</a></p>
 <p>Dodali vse točke?<a href="/stetja/{{id_aktualnega_stetja}}/">Nazaj na štetje.</a></p>
