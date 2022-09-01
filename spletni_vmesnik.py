@@ -174,6 +174,90 @@ def pomoc_pri_stetju_tarok(id_stetja):
         id_aktualnega_stetja=id_stetja
     )
 
+@bottle.get("/stetja/<id_stetja:int>/<id_igralca_ki_je_igral:int>/<id_zmagovalca:int>/pomoc_tarok/za_dva/")
+def kdo_je_zmagal(id_stetja, id_igralca_ki_je_igral, id_zmagovalca):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    if int(id_igralca_ki_je_igral) < 2:
+        igralec = stetje.igralci[id_igralca_ki_je_igral]
+    else:
+        igralec = 2
+    return bottle.template(
+        "pomoc_za_dva.tpl",
+        stetja=stanje.stetja,
+        aktualno_stetje=stetje,
+        id_aktualnega_stetja=id_stetja,
+        aktualni_igralec=igralec,
+        id_aktualnega_igralca=id_igralca_ki_je_igral,
+        id_zmagovalca=id_zmagovalca
+    )
+
+@bottle.post("/stetja/<id_stetja:int>/<id_igralca_ki_je_igral:int>/<id_zmagovalca:int>/")
+def dodaj_tocke_tarok_za_dva(id_stetja, id_igralca_ki_je_igral, id_zmagovalca):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    igralec_ki_je_zmagal = stetje.igralci[id_zmagovalca]
+    if int(id_igralca_ki_je_igral) < 2:
+        igralec_ki_je_igral = stetje.igralci[id_igralca_ki_je_igral]
+        if igralec_ki_je_igral == igralec_ki_je_zmagal:
+            if bottle.request.forms.getunicode("nove_tocke"):
+                tocke = str(2*int(bottle.request.forms.getunicode("nove_tocke")))
+            else:
+                tocke = "0"
+            igralec_ki_je_igral.dodaj_tocke(tocke)
+        else: 
+            if bottle.request.forms.getunicode("nove_tocke"):
+                tocke = str(-3*int(bottle.request.forms.getunicode("nove_tocke")))
+            else:
+                tocke = "0"
+            igralec_ki_je_igral.dodaj_tocke(tocke)
+    else:
+        igralec_ki_je_igral = 2
+        if int(id_zmagovalca) == 0:
+            porazenec = stetje.igralci[1]
+            if bottle.request.forms.getunicode("nove_tocke"):
+                tocke = bottle.request.forms.getunicode("nove_tocke")
+            else:
+                tocke = "0"
+            tocke_porazenca = str(-1*int(tocke))
+            igralec_ki_je_zmagal.dodaj_tocke(tocke)
+            porazenec.dodaj_tocke(tocke_porazenca)
+        else:
+            porazenec = stetje.igralci[0]
+            if bottle.request.forms.getunicode("nove_tocke"):
+                tocke = bottle.request.forms.getunicode("nove_tocke")
+            else:
+                tocke = "0"
+            tocke_porazenca = str(-1*int(tocke))
+            igralec_ki_je_zmagal.dodaj_tocke(tocke)
+            porazenec.dodaj_tocke(tocke_porazenca)
+    shrani_stanje_trenutnega_uporabnika(stanje)
+    bottle.redirect(url_stetja(id_stetja))
+
+
+        
+        
+
+        
+
+
+@bottle.post("/stetja/<id_stetja:int>/<id_igralca_ki_je_igral:int>/pomoc_tarok/zmaga/")
+def kdo_je_zmagal_tarok(id_stetja, id_igralca_ki_je_igral):
+    zmagovalec = bottle.request.forms.getunicode("zmagovalec")
+    id_zmagovalca = f"{zmagovalec}"
+    bottle.redirect(f"/stetja/{id_stetja}/{id_igralca_ki_je_igral}/{id_zmagovalca}/pomoc_tarok/za_dva/")
+
+
+@bottle.post("/stetja/<id_stetja:int>/pomoc_tarok/")
+def kdo_je_igral(id_stetja):
+    igralec = bottle.request.forms.getunicode("igram")
+    id_igralca = f"{igralec}"
+    if int(id_igralca) < 2:
+        bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/2/pomoc_tarok/za_dva/")
+    else:
+        bottle.redirect(f"/stetja/{id_stetja}/2/2/pomoc_tarok/za_dva/")
+
+
 @bottle.get("/stetja/<id_stetja:int>/pomoc_enka/")
 def pomoc_pri_stetju_enka(id_stetja):
     stanje = stanje_trenutnega_uporabnika()
@@ -288,7 +372,7 @@ def dodaj_tocke_enka_zmagovalec_post(id_stetja):
     bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/pomoc_enka/zmagovalec/")
 
 @bottle.post("/stetja/<id_stetja:int>/<id_igralca:int>/pomoc_enka/zmagovalec/")
-def dodaj_tocke_enka_zmagovalec(id_stetja, id_igralca):
+def dodaj_tocke_zmagovalcu_enka(id_stetja, id_igralca):
     stanje = stanje_trenutnega_uporabnika()
     stetje = stanje.stetja[id_stetja]
     igralec = stetje.igralci[id_igralca]
