@@ -56,6 +56,7 @@
     </tr>
 </thead>
 <tbody>
+<br>
     % for id_igralca, igralec in enumerate(aktualno_stetje.igralci):
     <tr>
         <td>{{ igralec.ime }}: {{ igralec.vsota_tock() }} točk</td>
@@ -69,13 +70,12 @@
                     <button class="button is-info is-small">dodaj točke</button>
                 </div>
             </td>
+            <br>
         </form>
     </tr>
     % end
 </tbody>
 <br>
-<br>
-
 
 <p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_tarok/">Pomoč pri štetju za tarok</a></p>
 <p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_enka/">Pomoč pri štetju za enko</a></p>

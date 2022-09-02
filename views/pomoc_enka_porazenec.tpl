@@ -49,11 +49,11 @@
                     <button class="button is-info is-small">dodaj točke</button>
                 </div>
             </td>
+            <br>
         </form>
     </tr>
 % end    
 </tbody>
-<br>
 <br>
 
 <p><a href="/stetja/{{id_aktualnega_stetja}}/pomoc_enka/">Nazaj na stran za pomoč pri štetju za enko.</a></p>
