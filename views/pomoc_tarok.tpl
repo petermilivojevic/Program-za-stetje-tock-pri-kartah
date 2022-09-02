@@ -96,11 +96,22 @@
         <p>vsi kralji so vredni 10 točk (napovedani 20 točk)</p>
         <p>trula je vredna 10 točk (napovedana 20 točk)</p>
         <p>pagat ultimo je vreden 25 točk (napovedani je vreden 50 točk)</p>
-        <p>nenapovedani valat je vreden 50 točk</p>
+        <p>nenapovedani valat je vreden 50 točk</p><br>
+        <strong><p>Točkovanje v primeru neuspešne kontre:</p></strong>
+        <p>Igralec, ki je "igral" dobi v primeru zmage podvojene točke vrednosti napovedi,
+        če je bila klicana kontra in početverjene točke vrdednosti napovedi, če je bila klicana rekontra.
+        Igralec, ki ni klical ne kontre in ne rekontre pa dobi v primeru kontre polovico točk vrednosti napovedi
+        in tri polovice v primeru rekontre. Igralec, ki je klical kontro pa ne dobi tock.</p><br>
+        <strong><p>Točkovanje v primeru uspešne kontre:</p></strong>
+        <p>Igralec, ki je "igral" izgubi v primeru poraza podvojene točke vrednosti napovedi,
+        če je bila klicana kontra in početverjene točke vrdednosti napovedi, če je bila klicana rekontra.
+        Igralec, ki ni klical ne kontre in ne rekontre ne dobi tock. Igralec, ki je klical kontro pa dobi
+        v primeru kontre polovico točk vrednosti napovedi in tri polovice v primeru rekontre.<p>
     
 
     % elif aktualno_stetje.stevilo_igralcev() == 4:
-        <tr> Tu je pomoč za igro v štirih.</tr>
+        <tr> Tu je pomoč za igro v štirih.</tr><br>
+        Pisec spletne strani žal še ne zna pravil taroka za 4.
 
     % else:
         <tr> Tarok se igra v dveh, treh, ali štirih</ tr>

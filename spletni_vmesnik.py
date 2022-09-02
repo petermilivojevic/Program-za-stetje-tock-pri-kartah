@@ -185,7 +185,6 @@ def kdo_je_zmagal(id_stetja, id_igralca_ki_je_igral, id_zmagovalca, stevilo_igra
             igralec = stetje.igralci[id_igralca_ki_je_igral]
         else:
             igralec = 3
-    
     return bottle.template(
         "pomoc_za_tarok.tpl",
         stetja=stanje.stetja,
@@ -194,7 +193,7 @@ def kdo_je_zmagal(id_stetja, id_igralca_ki_je_igral, id_zmagovalca, stevilo_igra
         aktualni_igralec=igralec,
         id_aktualnega_igralca=id_igralca_ki_je_igral,
         id_zmagovalca=id_zmagovalca,
-        stevilo_igralcev=stevilo_igralcev
+        stevilo_igralcev=stevilo_igralcev,
         )
 
 @bottle.post("/stetja/<id_stetja:int>/<id_igralca_ki_je_igral:int>/<id_zmagovalca:int>/")
@@ -240,7 +239,7 @@ def dodaj_tocke_tarok_2(id_stetja, id_igralca_ki_je_igral, id_zmagovalca):
     bottle.redirect(url_stetja(id_stetja))
 
 @bottle.post("/stetja/<id_stetja:int>/<id_aktualnega_igralca:int>/<id_zmagovalca:int>/pomoc_tarok/v_treh/dodatne_tocke/")
-def dodaj_tocke_tarok_3(id_stetja, id_aktualnega_igralca, id_zmagovalca):
+def dodaj_dodatne_tocke_tarok_3(id_stetja, id_aktualnega_igralca, id_zmagovalca):
     stanje = stanje_trenutnega_uporabnika()
     stetje = stanje.stetja[id_stetja]
     if bottle.request.forms.getunicode("ime"):
@@ -283,54 +282,110 @@ def dodaj_tocke_tarok_3(id_stetja, id_aktualnega_igralca, id_zmagovalca):
 def dodaj_tocke_tarok_3(id_stetja, id_aktualnega_igralca, id_zmagovalca):
     stanje = stanje_trenutnega_uporabnika()
     stetje = stanje.stetja[id_stetja]
-    igralec = stetje.igralci[id_aktualnega_igralca]
+    igralecc = stetje.igralci[id_aktualnega_igralca]
     if bottle.request.forms.getunicode("igra"):
-        igra = bottle.request.forms.getunicode("igra")
+        igra = int(bottle.request.forms.getunicode("igra"))
+        tocke_igralca = "0"
+        tocke_kontre = "0"
+        tocke_opazovalca = "0"
         if bottle.request.forms.getunicode("nove_tocke"):
             vnesene_tocke = int(bottle.request.forms.getunicode("nove_tocke"))
         else:
-            vnesene_tocke = -1
-        if int(igra) < 5:
-            tocke_igralca = vnesene_tocke - 35
+            bottle.redirect(f"/stetja/{id_stetja}/{id_aktualnega_igralca}/{id_zmagovalca}/pomoc_tarok/3/")
+        if bottle.request.forms.getunicode("nacin"):
+            nacin = int(bottle.request.forms.getunicode("nacin"))
         else:
-            tocke_igralca = 0
-        if igra == "1":
+            nacin = 3
+        if bottle.request.forms.getunicode("kontra"):
+            kontra = int(bottle.request.forms.getunicode("kontra"))
+        else:
+            kontra = 0
+        if bottle.request.forms.getunicode("rekontra"):
+            rekontra = int(bottle.request.forms.getunicode("rekontra"))
+        else:
+            rekontra = 0
+        if igra == 1 and nacin == 3:
             tocke_igre = 10
-        elif igra == "2":
+        elif igra == 2 and nacin == 3:
             tocke_igre = 30
-        elif igra == "3":
+        elif igra == 3 and nacin == 3:
             tocke_igre = 50
-        elif igra == "4":
+        elif igra == 4 and nacin == 3:
             tocke_igre = 80
-        elif igra == "5":
-            tocke_igre = 70
-        elif igra == "6":
+        elif igra == 1 and nacin == 2:
             tocke_igre = 125
-        elif igra == "7":
+        elif igra == 2 and nacin == 2:
             tocke_igre = 150
-        elif igra == "8":
+        elif igra == 3 and nacin == 2:
             tocke_igre = 175
-        elif igra == "9":
+        elif igra == 4 and nacin == 2:
             tocke_igre = 250
-        elif igra == "10":
+        elif igra == 1 and nacin == 1:
             tocke_igre = 250
-        elif igra == "11":
+        elif igra == 2 and nacin == 1:
             tocke_igre = 300
-        elif igra == "12":
+        elif igra == 3 and nacin == 1:
             tocke_igre = 350
-        elif igra == "13":
+        elif igra == 4 and nacin == 1:
             tocke_igre = 500
-        if int(igra) > 5 and vnesene_tocke != 70:
-            tocke = str(tocke_igralca - tocke_igre)
-        elif int(igra) == 5 and vnesene_tocke != 0:
-            tocke = str(tocke_igralca - tocke_igre)
-        else:
-            tocke = str(tocke_igralca + tocke_igre)
-        igralec.dodaj_tocke(tocke)
+        if igra < 5:
+            priigrane_tocke = vnesene_tocke - 35
+            tocke = tocke_igre
+            if nacin == 1 or nacin == 2:
+                if vnesene_tocke == 70:
+                    if kontra == 0 and rekontra == 0:
+                        tocke_igralca = str(tocke)
+                        tocke_kontre = "0"
+                        tocke_opazovalca = "0"
+                    elif kontra == 1 and rekontra == 0:
+                        tocke_igralca = str(int(tocke*2))
+                        tocke_kontre = "0"
+                        tocke_opazovalca = str(int(tocke/2))
+                    elif rekontra == 1:
+                        tocke_igralca = str(int(tocke*4))
+                        tocke_kontre = "0"
+                        tocke_opazovalca = str(int(tocke*3/2))
+                else:
+                    if kontra == 0 and rekontra == 0:
+                        tocke_igralca = str(-tocke)
+                        tocke_kontre = "0"
+                        tocke_opazovalca = "0"
+                    elif kontra == 1 and rekontra == 0:
+                        tocke_igralca = str(int(-tocke*2))
+                        tocke_kontre = str(int(tocke/2))
+                        tocke_opazovalca = "0"
+                    elif rekontra == 1:
+                        tocke_igralca = str(int(-tocke*4))
+                        tocke_kontre = str(int(tocke*3/2))
+                        tocke_opazovalca = "0"
+            elif nacin == 3:
+                if vnesene_tocke < 36:
+                    tocke_igralca = str(priigrane_tocke - tocke)
+                else:
+                    if priigrane_tocke == 35:
+                        tocke_igralca = str(tocke + 85)
+                    else:
+                        tocke_igralca = str(priigrane_tocke + tocke)
+        if igra == 5:
+            if vnesene_tocke == 0:
+                tocke_igralca = "70"
+            else:
+                tocke_igralca = "-70"
+        if bottle.request.forms.getunicode("kontras"):
+            id_kon = int(bottle.request.forms.getunicode("kontras"))
+            kontras = stetje.igralci[id_kon]
+            for id_igralca, igralec in enumerate(stetje.igralci):
+                if id_igralca != id_aktualnega_igralca and id_igralca != id_kon:
+                    opazovalec = stetje.igralci[id_igralca]
+                    kontras.dodaj_tocke(tocke_kontre)
+                    opazovalec.dodaj_tocke(tocke_opazovalca)
+        igralecc.dodaj_tocke(tocke_igralca)
         shrani_stanje_trenutnega_uporabnika(stanje)
         bottle.redirect(f"/stetja/{id_stetja}/{id_aktualnega_igralca}/{id_zmagovalca}/pomoc_tarok/3/")
     else:
         bottle.redirect(f"/stetja/{id_stetja}/{id_aktualnega_igralca}/{id_zmagovalca}/pomoc_tarok/3/")
+    
+    
 
 
 
@@ -431,7 +486,7 @@ def dodaj_tocke_enka_porazenec(id_stetja, id_igralca):
         tocke3 = str(3*int(bottle.request.forms.getunicode("stevilo trojic")))
     else:
         tocke3 = "0"
-    if bottle.request.forms.getunicode("stevilo štiric"):
+    if bottle.request.forms.getunicode("stevilo stiric"):
         tocke4 = str(4*int(bottle.request.forms.getunicode("stevilo stiric")))
     else:
         tocke4 = "0"
@@ -439,7 +494,7 @@ def dodaj_tocke_enka_porazenec(id_stetja, id_igralca):
         tocke5 = str(5*int(bottle.request.forms.getunicode("stevilo petic")))
     else:
         tocke5 = "0"
-    if bottle.request.forms.getunicode("stevilo šestic"):
+    if bottle.request.forms.getunicode("stevilo sestic"):
         tocke6 = str(6*int(bottle.request.forms.getunicode("stevilo sestic")))
     else:
         tocke6 = "0"
@@ -513,7 +568,7 @@ def dodaj_tocke_zmagovalcu_enka(id_stetja, id_igralca):
         tocke3 = str(3*int(bottle.request.forms.getunicode("stevilo trojic")))
     else:
         tocke3 = "0"
-    if bottle.request.forms.getunicode("stevilo štiric"):
+    if bottle.request.forms.getunicode("stevilo stiric"):
         tocke4 = str(4*int(bottle.request.forms.getunicode("stevilo stiric")))
     else:
         tocke4 = "0"
@@ -521,7 +576,7 @@ def dodaj_tocke_zmagovalcu_enka(id_stetja, id_igralca):
         tocke5 = str(5*int(bottle.request.forms.getunicode("stevilo petic")))
     else:
         tocke5 = "0"
-    if bottle.request.forms.getunicode("stevilo šestic"):
+    if bottle.request.forms.getunicode("stevilo sestic"):
         tocke6 = str(6*int(bottle.request.forms.getunicode("stevilo sestic")))
     else:
         tocke6 = "0"

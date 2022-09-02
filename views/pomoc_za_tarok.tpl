@@ -37,26 +37,29 @@
 
 % elif stevilo_igralcev == 3:
     % if aktualni_igralec:
-    <thead>
-        <strong>Kako je igral?</strong><br>
+    <thead> 
+        {{aktualni_igralec.ime}}: {{aktualni_igralec.vsota_tock()}} trenutnih točk<br>
+        <strong>Kako je igral??</strong><br>
         <tr>
             <form method="POST" action="/stetja/{{id_aktualnega_stetja}}/{{id_aktualnega_igralca}}/{{id_zmagovalca}}/pomoc_tarok/v_treh/">
                 <td>
-                    <div class="control">
-                        <input type="radio" name="igra" value="1">trojka<br>
-                        <input type="radio" name="igra" value="2">dvojka<br>
-                        <input type="radio" name="igra" value="3">enka<br>
-                        <input type="radio" name="igra" value="4">brez talona<br>
-                        <input type="radio" name="igra" value="5">berač<br>
-                        <input type="radio" name="igra" value="6">tri - nap. barvni valat<br>
-                        <input type="radio" name="igra" value="7">dva - nap. barvni valat<br>
-                        <input type="radio" name="igra" value="8">ena - nap. barvni valat<br>
-                        <input type="radio" name="igra" value="9">brez - nap. barvni valat<br>
-                        <input type="radio" name="igra" value="10">tri - napovedani valat<br>
-                        <input type="radio" name="igra" value="11">dva - napovedani valat<br>
-                        <input type="radio" name="igra" value="12">ena - napovedani valat<br>
-                        <input type="radio" name="igra" value="13">brez talona - nap. valat<br>
-                    </div>
+                    <input type="radio" name="igra" value="1">trojka<br>
+                    <input type="radio" name="igra" value="2">dvojka<br>
+                    <input type="radio" name="igra" value="3">enka<br>
+                    <input type="radio" name="igra" value="4">brez talona<br>
+                    <input type="radio" name="igra" value="5">berač<br>
+                <strong>napovedi valata in igre</strong><br>
+                    <input type="radio" name="nacin" value="1">napovedani valat<br>
+                    <input type="radio" name="nacin" value="2">napovedani barvni valat<br>
+                    <input type="radio" name="nacin" value="3">ni bilo ne napovedi ne valata<br>
+                    <input type="checkbox" name="kontra" value="1">kontra<br>
+                    <input type="checkbox" name="rekontra" value="1">rekontra<br>
+                <strong>Kdo je postavil kontro?</strong><br>
+                    %for id_igralca, igralec in enumerate(aktualno_stetje.igralci):
+                        % if  id_igralca != id_aktualnega_igralca:
+                            <input type="radio" name="kontras" value="{{id_igralca}}">{{igralec.ime}}: {{ igralec.vsota_tock() }} trenutnih točk<br>
+                        % end
+                    % end
                 </td>
                 <td>
                     <input class="input is-small" type="number" step="1" min="0" max="70" name="nove_tocke" placeholder="dodaj točke">
@@ -76,7 +79,7 @@
             <form method="POST" action="/stetja/{{id_aktualnega_stetja}}/{{id_aktualnega_igralca}}/{{id_zmagovalca}}/pomoc_tarok/v_treh/dodatne_tocke/">
                 <td>
                     <div class="control">
-                    <strong>Izberite igralc, ki je napovedoval.</strong><br>
+                    <strong>Izberite igralca, ki je napovedoval.</strong><br>
                     % for id_igralca, igralec in enumerate(aktualno_stetje.igralci):
                         <td>
                             <input type="radio" name="ime" value="{{id_igralca}}">{{igralec.ime}}: {{ igralec.vsota_tock() }} trenutnih točk<br>
@@ -85,7 +88,7 @@
                         <strong>Izberite kaj je izbrani igralec napovedal za kralje.</strong><br>
                         <div class="control">
                             <input type="radio" name="kralj" value="20">napovedani kralji<br>
-                            <input type="radio" name="kralj" value="10">ne napovedani kralji<br>
+                            <input type="radio" name="kralj" value="10">nenapovedani kralji<br>
                             <input type="radio" name="kralj" value="0">ni bilo napovedi<br>
                             <div class="control">
                                 <input type="checkbox" name="uspesen_kralj" value="-1">napoved ni bila uspešna<br>
@@ -94,7 +97,7 @@
                         <strong>Izberite kaj je izbrani igralec napovedal za trulo.</strong><br>
                         <div class="control">
                             <input type="radio" name="trula" value="20">napovedana trula<br>
-                            <input type="radio" name="trula" value="10">ne napovedana trula<br>
+                            <input type="radio" name="trula" value="10">nenapovedana trula<br>
                             <input type="radio" name="trula" value="0">ni bilo napovedi<br>
                             <div class="control">
                                 <input type="checkbox" name="uspesna_trula" value="-1">napoved ni bila uspešna<br>
@@ -103,7 +106,7 @@
                         <strong>Izberite kaj je izbrani igralec napovedal za pagat ultimo.</strong><br>
                         <div class="control">
                             <input type="radio" name="pagat" value="50">napovedani pagat ultimo<br>
-                            <input type="radio" name="pagat" value="25">ne napovedani pagat ultimo<br>
+                            <input type="radio" name="pagat" value="25">nenapovedani pagat ultimo<br>
                             <input type="radio" name="pagat" value="0">ni bilo napovedi<br>
                             <div class="control">
                                 <input type="checkbox" name="uspesen_pagat" value="-1">napoved ni bila uspešna<br>
