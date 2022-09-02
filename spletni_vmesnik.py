@@ -239,6 +239,46 @@ def dodaj_tocke_tarok_2(id_stetja, id_igralca_ki_je_igral, id_zmagovalca):
     shrani_stanje_trenutnega_uporabnika(stanje)
     bottle.redirect(url_stetja(id_stetja))
 
+@bottle.post("/stetja/<id_stetja:int>/<id_aktualnega_igralca:int>/<id_zmagovalca:int>/pomoc_tarok/v_treh/dodatne_tocke/")
+def dodaj_tocke_tarok_3(id_stetja, id_aktualnega_igralca, id_zmagovalca):
+    stanje = stanje_trenutnega_uporabnika()
+    stetje = stanje.stetja[id_stetja]
+    if bottle.request.forms.getunicode("ime"):
+        ime = int(bottle.request.forms.getunicode("ime"))
+        igralec = stetje.igralci[ime]
+    else:
+        bottle.redirect(f"/stetja/{id_stetja}/{id_aktualnega_igralca}/{id_zmagovalca}/pomoc_tarok/3/")
+    if bottle.request.forms.getunicode("kralj"):
+        kralj = int(bottle.request.forms.getunicode("kralj"))
+    else:
+        kralj = 0
+    if bottle.request.forms.getunicode("trula"):
+        trula = int(bottle.request.forms.getunicode("trula"))
+    else:
+        trula = 0
+    if bottle.request.forms.getunicode("pagat"):
+        pagat = int(bottle.request.forms.getunicode("pagat"))
+    else:
+        pagat = 0
+    if bottle.request.forms.getunicode("uspesen_kralj") and kralj == 20:
+        u_k = int(bottle.request.forms.getunicode("uspesen_kralj"))
+    else:
+        u_k = 1
+    if bottle.request.forms.getunicode("uspesna_trula") and trula == 20:
+        u_t = int(bottle.request.forms.getunicode("uspesna_trula"))
+    else:
+        u_t = 1
+    if bottle.request.forms.getunicode("uspesen_pagat") and pagat == 50:
+        u_p = int(bottle.request.forms.getunicode("uspesen_pagat"))
+    else:
+        u_p = 1
+    tocke = str(u_k*kralj + u_t*trula + u_p*pagat)
+    igralec.dodaj_tocke(tocke)
+    shrani_stanje_trenutnega_uporabnika(stanje)
+    bottle.redirect(f"/stetja/{id_stetja}/{id_aktualnega_igralca}/{id_zmagovalca}/pomoc_tarok/3/")
+
+
+
 @bottle.post("/stetja/<id_stetja:int>/<id_aktualnega_igralca:int>/<id_zmagovalca:int>/pomoc_tarok/v_treh/")
 def dodaj_tocke_tarok_3(id_stetja, id_aktualnega_igralca, id_zmagovalca):
     stanje = stanje_trenutnega_uporabnika()
@@ -288,7 +328,7 @@ def dodaj_tocke_tarok_3(id_stetja, id_aktualnega_igralca, id_zmagovalca):
             tocke = str(tocke_igralca + tocke_igre)
         igralec.dodaj_tocke(tocke)
         shrani_stanje_trenutnega_uporabnika(stanje)
-        bottle.redirect(url_stetja(id_stetja))
+        bottle.redirect(f"/stetja/{id_stetja}/{id_aktualnega_igralca}/{id_zmagovalca}/pomoc_tarok/3/")
     else:
         bottle.redirect(f"/stetja/{id_stetja}/{id_aktualnega_igralca}/{id_zmagovalca}/pomoc_tarok/3/")
 
@@ -317,8 +357,9 @@ def kdo_je_zmagal_tarok(id_stetja, id_igralca_ki_je_igral):
     zmagovalec = bottle.request.forms.getunicode("zmagovalec")
     id_zmagovalca = f"{zmagovalec}"
     st_igralcev = stetje.stevilo_igralcev()
-    if int(id_zmagovalca) in range(st_igralcev):
-        bottle.redirect(f"/stetja/{id_stetja}/{id_igralca_ki_je_igral}/{id_zmagovalca}/pomoc_tarok/{st_igralcev}/")
+    if bottle.request.forms.getunicode("zmagovalec"):
+        if int(id_zmagovalca) in range(st_igralcev):
+            bottle.redirect(f"/stetja/{id_stetja}/{id_igralca_ki_je_igral}/{id_zmagovalca}/pomoc_tarok/{st_igralcev}/")
     else:
         bottle.redirect(f"/stetja/{id_stetja}/{id_igralca_ki_je_igral}/2/pomoc_tarok/{st_igralcev}/")
 
@@ -327,13 +368,14 @@ def kdo_je_zmagal_tarok(id_stetja, id_igralca_ki_je_igral):
 def kdo_je_igral(id_stetja):
     stanje = stanje_trenutnega_uporabnika()
     stetje = stanje.stetja[id_stetja]
-    igralec = bottle.request.forms.getunicode("igram")
-    id_igralca = f"{igralec}"
-    st_igralcev = stetje.stevilo_igralcev()
-    if int(id_igralca) in range(st_igralcev):
-        bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/2/pomoc_tarok/{st_igralcev}/")
-    elif int(id_igralca) == st_igralcev:
-        bottle.redirect(f"/stetja/{id_stetja}/2/2/pomoc_tarok/{st_igralcev}/")
+    if bottle.request.forms.getunicode("igram"):
+        igralec = bottle.request.forms.getunicode("igram")
+        id_igralca = f"{igralec}"
+        st_igralcev = stetje.stevilo_igralcev()
+        if int(id_igralca) in range(st_igralcev):
+            bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/2/pomoc_tarok/{st_igralcev}/")
+        elif int(id_igralca) == st_igralcev:
+            bottle.redirect(f"/stetja/{id_stetja}/2/2/pomoc_tarok/{st_igralcev}/")
     else:
         bottle.redirect(f"/stetja/{id_stetja}/pomoc_tarok/")
 
@@ -449,7 +491,10 @@ def dodaj_tocke_enka_zmagovalec_get(id_stetja, id_igralca):
 def dodaj_tocke_enka_zmagovalec_post(id_stetja):
     igralec = bottle.request.forms.getunicode("zmagovalec")
     id_igralca =f"{igralec}"
-    bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/pomoc_enka/zmagovalec/")
+    if bottle.request.forms.getunicode("zmagovalec"):
+        bottle.redirect(f"/stetja/{id_stetja}/{id_igralca}/pomoc_enka/zmagovalec/")
+    else:
+        bottle.redirect(f"/stetja/{id_stetja}/pomoc_enka/zmagovalec/")
 
 @bottle.post("/stetja/<id_stetja:int>/<id_igralca:int>/pomoc_enka/zmagovalec/")
 def dodaj_tocke_zmagovalcu_enka(id_stetja, id_igralca):
