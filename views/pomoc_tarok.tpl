@@ -50,7 +50,36 @@
     
 
     % elif aktualno_stetje.stevilo_igralcev() == 3:
-        <tr> Tu je pomoč za igro v treh.</tr>
+        <tr> Tu je pomoč za igro v treh.</tr><br>
+        <p>Kdo je "igral"?<br></p>
+        % for id_igralca, igralec in enumerate(aktualno_stetje.igralci):
+    <tr>
+        <form method="POST" action="/stetja/{{id_aktualnega_stetja}}/pomoc_tarok/">
+            <td></td>
+            <td>
+                <input type="radio" name="igram" value="{{id_igralca}}">{{igralec.ime}}: {{ igralec.vsota_tock() }} trenutnih točk<br>
+            </td>
+        % end
+            <div class="control">
+                <button class="button is-info is-small">izberi</button>
+            </div>
+        </form>
+    </tr>
+   <br>
+    <p>Če se je zgodil "mondfang", izberite igralca, ki je izgubil monda?</p>
+    % for id_igralca, igralec in enumerate(aktualno_stetje.igralci):
+    <tr>
+        <form method="POST" action="/stetja/{{id_aktualnega_stetja}}/mondfang/">
+            <td></td>
+            <td>
+                <input type="radio" name="nesrecnez" value="{{id_igralca}}">{{igralec.ime}}: {{ igralec.vsota_tock() }} trenutnih točk<br>
+            </td>
+    % end
+            <div class="control">
+                <button class="button is-info is-small">izberi</button>
+            </div>
+        </form>
+    </tr>
 
     % elif aktualno_stetje.stevilo_igralcev() == 4:
         <tr> Tu je pomoč za igro v štirih.</tr>
